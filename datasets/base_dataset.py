@@ -87,8 +87,8 @@ def get_params(opt, size):
         new_w = opt.load_size
         new_h = opt.load_size * h // w
 
-    x = random.randint(0, np.maximum(0, new_w - opt.crop_size))
-    y = random.randint(0, np.maximum(0, new_h - opt.crop_size))
+    x = random.randint(0, np.maximum(0, new_w - opt.input_sizeh))
+    y = random.randint(0, np.maximum(0, new_h - opt.input_sizew))
 
     flip = random.random() > 0.5
 
@@ -101,9 +101,9 @@ def get_transform(opt, params=None, grayscale=False, convert=True, additional_ta
         transform_list.append(transforms.ToGray())
     if opt.preprocess == 'resize_and_crop':
         if params is None:
-            transform_list.append(RandomResizedCrop(opt.crop_size, opt.crop_size, scale=(0.9, 1.0))) # 0.5,1.0
+            transform_list.append(RandomResizedCrop(opt.input_sizeh,opt.input_sizew, scale=(0.9, 1.0))) # 0.5,1.0
     elif opt.preprocess == 'resize':
-        transform_list.append(transforms.Resize(opt.input_size, opt.input_size))
+        transform_list.append(transforms.Resize(opt.input_sizeh, opt.input_sizew))
     elif opt.preprocess == 'none':
         return HCompose(transform_list)
 
