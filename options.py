@@ -84,6 +84,10 @@ class Options():
                             help='preception loss')
         parser.add_argument('-d', '--debug', dest='debug', action='store_true',
                             help='show intermediate results')
+        parser.add_argument('--input-sizeh', default=144, type=int, metavar='N',
+                            help='train batchsize')
+        parser.add_argument('--input-sizew', default=288, type=int, metavar='N',
+                            help='train batchsize')
         parser.add_argument('--input-size', default=256, type=int, metavar='N',
                             help='train batchsize')
         parser.add_argument('--freq', default=-1, type=int, metavar='N',
@@ -115,7 +119,8 @@ class Options():
         parser.add_argument('--use_refine', action='store_true', help='train batchsize') 
         parser.add_argument('--k_refine', default=3, type=int, help='train batchsize')
         parser.add_argument('--k_skip_stage', default=3, type=int, help='train batchsize')
-
+        parser.add_argument('--savefreq', default=3000, type=int, help='save checkpoint every savefreq batch')
+        
         parser.add_argument('--log', default='sample.log', type=str, help='log name')
         parser.add_argument('--lr_schedule', default='muti_step', type=str, help='schedule_method')
         return parser
