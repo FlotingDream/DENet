@@ -169,7 +169,7 @@ class BasicModel(object):
                 mask =batches['mask'].to(self.device)
                 
                 if self.args.hl:
-                    feeded = torch.cat([inputs,torch.zeros((1,4,self.args.input_size,self.args.input_size)).to(self.device)],dim=1)
+                    feeded = torch.cat([inputs,torch.zeros((1,4,self.args.input_sizeh,self.args.input_sizew)).to(self.device)],dim=1)
                 else:
                     feeded = inputs
 
@@ -231,12 +231,15 @@ class BasicModel(object):
         print("=> loaded checkpoint '{}' (epoch {})"
                 .format(resume_path, current_checkpoint['epoch']))
         
-    def save_checkpoint(self,filename='checkpoint.pth.tar', snapshot=None):
+    def save_checkpoint(self,filename='checkpoint.pt', snapshot=None):
         is_best = True if self.best_acc < self.metric else False
 
         if is_best:
             self.best_acc = self.metric
-
+        import time
+        a=time.strftime("-%Y-%m-%d--%H-%M", time.localtime()) 
+        filename='checkpoint'+a+'.pt'
+        print("==>Save model: "+filename)
         state = {
                     'epoch': self.current_epoch + 1,
                     'nets': self.args.nets,
@@ -246,16 +249,16 @@ class BasicModel(object):
                 }
 
         filepath = os.path.join(self.args.checkpoint, filename)
-        torch.save(state, filepath)
+        torch.save(state, filepath,_use_new_zipfile_serialization=False)
 
         if snapshot and state['epoch'] % snapshot == 0:
-            shutil.copyfile(filepath, os.path.join(self.args.checkpoint, 'checkpoint_{}.pth.tar'.format(state.epoch)))
+            shutil.copyfile(filepath, os.path.join(self.args.checkpoint, 'checkpoint_{}.pt'.format(state.epoch)))
         
         if is_best:
             self.best_acc = self.metric
             print('Saving Best Metric with PSNR:%s'%self.best_acc)
             if not os.path.exists(self.args.checkpoint): os.makedirs(self.args.checkpoint)
-            shutil.copyfile(filepath, os.path.join(self.args.checkpoint, 'model_best.pth.tar'))
+            shutil.copyfile(filepath, os.path.join(self.args.checkpoint, 'model_best.pt'))
 
     def clean(self):
         self.writer.close()
