@@ -199,6 +199,11 @@ class SLBR(BasicModel):
                 self.validate(current_index)
                 self.flush()
                 self.save_checkpoint()
+            if current_index % self.args.savefreq == 0:
+                #self.validate(current_index)
+                #self.flush()
+                #print("==> Save checkpoint")
+                self.save_checkpoint()
             if i % 100 == 0:
                 self.record('train/loss_L2', losses_meter.avg, current_index)
                 self.record('train/loss_Refine', loss_refine_meter.avg, current_index)
